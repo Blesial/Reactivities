@@ -30,6 +30,8 @@
 //  way to organize and categorize database objects, making it easier to manage and access them.
 namespace Domain
 {
+
+    // Entity framework needs all this properties to be public
     public class Activity
     {
         public Guid Id { get; set; }

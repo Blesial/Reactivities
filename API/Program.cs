@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
+// this host the app in a server
 var builder = WebApplication.CreateBuilder(args);
 
 // ESTE ARCHIVO SE DIVIDE EN 2: 
@@ -19,7 +20,9 @@ builder.Services.AddSwaggerGen();
 // Esta línea de código registra el contexto de la base de datos DataContext en el contenedor 
 // de servicios. Esto permite que otras partes de la aplicación puedan solicitar y 
 //utilizar una instancia del contexto de la base de datos mediante la 
-// INYECCION DE DEPENDENCIAS!!! ver video q paso diego 
+// INYECCION DE DEPENDENCIAS!!! ver video q paso diego
+// hay que hacer dotnet restore para que aparezca el metodo AddDbContext. 
+
 builder.Services.AddDbContext<DataContext>(opt => // expresion LAMBDA (PROGRAMACION FUNCIONAL)
 {
     
@@ -65,7 +68,6 @@ app.MapControllers();
 // Es como si se abriera una pequeña tienda temporal dentro de la tienda principal.
 // Dentro de ese alcance de servicio, el ServiceProvider es responsable de proporcionar todas las dependencias necesarias para manejar esa solicitud específica. 
 using var scope = app.Services.CreateScope();
-
 // es como un inventario, almacena todas las dependencias de la app. 
 var services = scope.ServiceProvider;
 
@@ -90,7 +92,7 @@ catch (Exception ex)
 // Una interfaz es una "abstracción" en el sentido de que describe un conjunto de métodos y propiedades que un objeto debe implementar para cumplir un contrato específico. Es como un contrato que define qué puede hacer un objeto, sin especificar cómo lo hace internamente
     var logger = services.GetRequiredService<ILogger<Program>>();
 
-    logger.LogError(ex, "An error has occurred");
+    logger.LogError(ex, "An error has occurred during migration");
 }
 
 // Una vez que la solicitud ha sido atendida y se cierra el alcance de servicio,

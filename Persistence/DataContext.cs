@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 //   de negocios de la aplicación y el almacenamiento de datos subyacente (por ejemplo, bases de datos).
 
 
-// epository Pattern Overview:
+// Repository Pattern Overview:
 // The pattern aims to separate the data access logic from the rest of the application's business logic.
 // It provides a clear and standardized API for performing CRUD operations (Create, Read, Update, Delete) on entities.
 // The application's business logic interacts with repositories instead of directly accessing the DbContext or the data storage.
@@ -24,6 +24,7 @@ using Microsoft.EntityFrameworkCore;
 // DATA CONTEXT VA A CREAR DB SETS! QUE REPRESENTAN LAS TABLAS Q VAMOS A CREAR 
 
 namespace Persistence
+
 {
     public class DataContext : DbContext
     {
