@@ -6,7 +6,7 @@
 // using System.Threading.Tasks;
 
 // In the context of software development and Domain-Driven Design (DDD), 
-// the term "domain" refers to the specific subject area or problem space that the software 
+// the term "Domain" refers to the specific subject area or problem space that the software 
 // is intended to address. It represents the real-world business or problem domain that 
 //the software application is built to model, solve, or support.
 

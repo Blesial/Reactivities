@@ -21,7 +21,8 @@ using Microsoft.EntityFrameworkCore;
 // The application's business logic interacts with repositories instead of directly accessing the DbContext or the data storage.
 
 
-// DATA CONTEXT VA A CREAR DB SETS! QUE REPRESENTAN LAS TABLAS Q VAMOS A CREAR 
+// DATA CONTEXT VA A CREAR DB SETS! QUE REPRESENTAN LAS TABLAS Q VAMOS A CREAR
+// BASICAMENTE ESTAMOS METIENDO ENTITIY FRAMEWORK
 
 namespace Persistence
 

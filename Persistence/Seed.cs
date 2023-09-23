@@ -108,8 +108,8 @@ namespace Persistence
                 }
             };
 
-            await context.Activities.AddRangeAsync(activities);
-            await context.SaveChangesAsync();
+            await context.Activities.AddRangeAsync(activities);// esto no guarda las activities en la base de datos todavia, solo guarda en memoria .
+            await context.SaveChangesAsync(); // aca si ya lo envia y guarda en la base de datos. 
         }
     }
 }

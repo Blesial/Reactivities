@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
+
 // this host the app in a server
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,7 @@ builder.Services.AddSwaggerGen();
 
 // Esta línea de código registra el contexto de la base de datos DataContext en el contenedor 
 // de servicios. Esto permite que otras partes de la aplicación puedan solicitar y 
-//utilizar una instancia del contexto de la base de datos mediante la 
+//utilizar una instancia del contexto de la base de datos mediante la    
 // INYECCION DE DEPENDENCIAS!!! ver video q paso diego
 // hay que hacer dotnet restore para que aparezca el metodo AddDbContext. 
 
@@ -33,7 +34,7 @@ builder.Services.AddDbContext<DataContext>(opt => // expresion LAMBDA (PROGRAMAC
 // En resumen, este código establece la configuración para el contexto de la base de datos en
 // la aplicación ASP.NET Core, permitiendo que la aplicación utilice Entity Framework Core para
 // interactuar con una base de datos SQLite mediante la inyección de dependencias. 
-//Al utilizar AddDbContext en Startup.cs, se asegura que el contexto de la base de datos 
+//Al utilizar AddDbContext  , se asegura que el contexto de la base de datos 
 //esté disponible en toda la aplicación y se pueda utilizar en los controladores, servicios u 
 //otras partes del código que lo necesiten.
 
@@ -46,6 +47,11 @@ builder.Services.AddDbContext<DataContext>(opt => // expresion LAMBDA (PROGRAMAC
 // the database schema in sync with the changes in the domain model (entities and relationships) 
 // without the need to manually create or modify the database tables.
 
+// builder.Services.AddCors(opt => {
+//     opt.addPolicy("CorsPolicy", policy => {
+//         policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
+//     });
+// });
 
 var app = builder.Build();
 
@@ -57,16 +63,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.useCors("CorsPolicy");
 
 app.UseAuthorization();
 
+// Registra los endpoints de nuestros controllers para saber donde mandar los requests que llegan
 app.MapControllers();
 
 // Cuando una solicitud HTTP llega a tu aplicación (por ejemplo, cuando un cliente navega a 
-// una página web), la aplicación crea un "alcance de servicio" para esa solicitud. 
+// una página web), la aplicación crea un "alcance de servicio" para esa solicitud. (un scope)
 // Es como si se abriera una pequeña tienda temporal dentro de la tienda principal.
-// Dentro de ese alcance de servicio, el ServiceProvider es responsable de proporcionar todas las dependencias necesarias para manejar esa solicitud específica. 
+// Dentro de ese alcance de servicio, el ServiceProvider es responsable de proporcionar todas las dependencias necesarias para manejar esa solicitud específica.
+
+// Aca necesitamos acceder a un servicio que no se obtiene por inyeccion de dependencias como los demas de arriba x eso se hace asi "manual":
 using var scope = app.Services.CreateScope();
 // es como un inventario, almacena todas las dependencias de la app. 
 var services = scope.ServiceProvider;
