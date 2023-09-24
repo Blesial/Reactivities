@@ -1,7 +1,6 @@
-using Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Domain;
-using Microsoft.EntityFrameworkCore;
+using Application.Activities;
 
 namespace API.Controllers
 {
@@ -9,32 +8,41 @@ namespace API.Controllers
     // already has the API attributtes
     public class ActivitiesController : BaseApiController
     {
-        // DEPENDENCY INJECTION IN THE CONSTRUCTOR OF THE CLASS
-        // In the constructor of ActivitiesController, dependency injection is used to inject an instance of DataContext into the controller. Dependency injection is a design pattern commonly used in ASP.NET Core to manage dependencies between classes. In this case, DataContext is injected into the controller to enable interaction with the database.
-        //CONSTRUCTOR:
-
-        // Private Fields: 
-        private readonly DataContext _context;
-        public ActivitiesController(DataContext context)
-        {
-            _context = context;
-            
-        }
+        // estamos usando mediator, no necesitamos inyectar el contexto de base de datos 
+        // metimos el acceso a mediator en nuestro Base controller. 
         // ENDPOINTS: 
 
         [HttpGet]
         // return a Task because is an async. type of actionresult. and the thing thats going back in 
         //the response body its gonna be a lista of activity:
+
+
         public async Task<ActionResult<List<Activity>>> GetActivities()
         {
-            return await _context.Activities.ToListAsync();
+            // Send es un metodo de mediator. No confundirse con List que es la clase dentro de activities
+            return await Mediator.Send(new List.Query());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Activity>> GetActivity(Guid id)
         {
-            return await _context.Activities.FindAsync(id);        }
-        
+            return await Mediator.Send(new Details.Query
+            {
+
+                Id = id
+            }
+        );
+        }
+
+        [HttpPost]
+        // IACTIONRESULT NOS DA ACCESO A LOS METODOS DEL RESPONSE COMO EL OK Y ESOS. SIN NECESIDAD DE ESPECIFICAR QUE TIPO DE DATO TRAE EL ACTION RESULT
+        // YA QUE EN ESTE CASO NO DEVUELVE NADA UN POST. 
+        public async Task<IActionResult> CreateActivity([FromBody]Activity activity)
+        {
+            await Mediator.Send(new Creates.Command {Activity = activity});
+
+            return Ok();
+        }
     }
 }
 

@@ -1,3 +1,4 @@
+using Application.Activities;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -15,6 +16,10 @@ var builder = WebApplication.CreateBuilder(args);
 // A TRAVES DE INYECCION DE DEPENDENCIAS!!!!
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// version mediator 12 para agregar el servicio:
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(List.Handler).Assembly));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -26,7 +31,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataContext>(opt => // expresion LAMBDA (PROGRAMACION FUNCIONAL)
 {
-    
+
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
@@ -94,11 +99,11 @@ try
 catch (Exception ex)
 {
 
-//En lugar de depender directamente de una implementación concreta de la "bitácora", MiClase dependerá de una "abstracción" llamada ILogger. Esto es lo que significa el enfoque basado en abstracciones. La clase ILogger es como un contrato que define los métodos que MiClase necesita para registrar mensajes.
-// En el contexto del marco de trabajo de registro (logging) en .NET Core, el enfoque basado en abstracciones significa que las clases que necesitan registrar mensajes no dependen directamente de un proveedor de registro específico, sino que dependen de la interfaz ILogger. La interfaz ILogger es una abstracción que define los métodos para registrar mensajes, pero no contiene la lógica real de cómo se realizan los registros. En cambio, la lógica de registro se encapsula en implementaciones concretas de la interfaz, que son los proveedores de registro.
-// Con este enfoque, puedes cambiar cómo se registran los mensajes simplemente inyectando una implementación diferente de ILogger en MiClase. Por ejemplo, en la configuración de la aplicación, puedes decidir si deseas utilizar FileLogger o ConsoleLogger para registrar mensajes, y el cambio será transparente para MiClase.
-// La abstracción es un principio de diseño que consiste en simplificar y reducir la complejidad de un objeto o sistema, resaltando solo los detalles relevantes para el contexto en el que se está utilizando. Es como un modelo o representación simplificada de la realidad. En programación, la abstracción implica ocultar los detalles internos de un objeto y exponer solo la información y funcionalidad esencial que otros objetos necesitan conocer.Una interfaz es una "abstracción" en el sentido de que describe un conjunto de métodos y propiedades que un objeto debe implementar para cumplir un contrato específico. Es como un contrato que define qué puede hacer un objeto, sin especificar cómo lo hace internamente
-// Una interfaz es una "abstracción" en el sentido de que describe un conjunto de métodos y propiedades que un objeto debe implementar para cumplir un contrato específico. Es como un contrato que define qué puede hacer un objeto, sin especificar cómo lo hace internamente
+    //En lugar de depender directamente de una implementación concreta de la "bitácora", MiClase dependerá de una "abstracción" llamada ILogger. Esto es lo que significa el enfoque basado en abstracciones. La clase ILogger es como un contrato que define los métodos que MiClase necesita para registrar mensajes.
+    // En el contexto del marco de trabajo de registro (logging) en .NET Core, el enfoque basado en abstracciones significa que las clases que necesitan registrar mensajes no dependen directamente de un proveedor de registro específico, sino que dependen de la interfaz ILogger. La interfaz ILogger es una abstracción que define los métodos para registrar mensajes, pero no contiene la lógica real de cómo se realizan los registros. En cambio, la lógica de registro se encapsula en implementaciones concretas de la interfaz, que son los proveedores de registro.
+    // Con este enfoque, puedes cambiar cómo se registran los mensajes simplemente inyectando una implementación diferente de ILogger en MiClase. Por ejemplo, en la configuración de la aplicación, puedes decidir si deseas utilizar FileLogger o ConsoleLogger para registrar mensajes, y el cambio será transparente para MiClase.
+    // La abstracción es un principio de diseño que consiste en simplificar y reducir la complejidad de un objeto o sistema, resaltando solo los detalles relevantes para el contexto en el que se está utilizando. Es como un modelo o representación simplificada de la realidad. En programación, la abstracción implica ocultar los detalles internos de un objeto y exponer solo la información y funcionalidad esencial que otros objetos necesitan conocer.Una interfaz es una "abstracción" en el sentido de que describe un conjunto de métodos y propiedades que un objeto debe implementar para cumplir un contrato específico. Es como un contrato que define qué puede hacer un objeto, sin especificar cómo lo hace internamente
+    // Una interfaz es una "abstracción" en el sentido de que describe un conjunto de métodos y propiedades que un objeto debe implementar para cumplir un contrato específico. Es como un contrato que define qué puede hacer un objeto, sin especificar cómo lo hace internamente
     var logger = services.GetRequiredService<ILogger<Program>>();
 
     logger.LogError(ex, "An error has occurred during migration");
