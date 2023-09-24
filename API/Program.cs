@@ -1,4 +1,4 @@
-using Application.Activities;
+using API.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -15,50 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 // SERVICES SON PARA AGREGAR LOGICA A NUESTRO CODIGO. OSEA, MAS FUNCIONALIDADES. ESTO SE HACE
 // A TRAVES DE INYECCION DE DEPENDENCIAS!!!!
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddApplicationServices(builder.Configuration);
 
-// version mediator 12 para agregar el servicio:
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(List.Handler).Assembly));
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Esta línea de código registra el contexto de la base de datos DataContext en el contenedor 
-// de servicios. Esto permite que otras partes de la aplicación puedan solicitar y 
-//utilizar una instancia del contexto de la base de datos mediante la    
-// INYECCION DE DEPENDENCIAS!!! ver video q paso diego
-// hay que hacer dotnet restore para que aparezca el metodo AddDbContext. 
-
-builder.Services.AddDbContext<DataContext>(opt => // expresion LAMBDA (PROGRAMACION FUNCIONAL)
-{
-
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-
-
-// En resumen, este código establece la configuración para el contexto de la base de datos en
-// la aplicación ASP.NET Core, permitiendo que la aplicación utilice Entity Framework Core para
-// interactuar con una base de datos SQLite mediante la inyección de dependencias. 
-//Al utilizar AddDbContext  , se asegura que el contexto de la base de datos 
-//esté disponible en toda la aplicación y se pueda utilizar en los controladores, servicios u 
-//otras partes del código que lo necesiten.
-
-// La cadena de conexión (connection string en inglés) es una cadena de texto que especifica cómo 
-// una aplicación de software se conecta a una fuente de datos, como una base de datos, 
-// un servicio web o cualquier otro origen de datos.
-
-// In Entity Framework, migration refers to the process of managing changes to the database 
-// schema based on changes made to the data model in the application. It allows developers to keep 
-// the database schema in sync with the changes in the domain model (entities and relationships) 
-// without the need to manually create or modify the database tables.
-
-// builder.Services.AddCors(opt => {
-//     opt.addPolicy("CorsPolicy", policy => {
-//         policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
-//     });
-// });
-
-var app = builder.Build();
+var app = builder.Build(); 
 
 // Configure the HTTP request pipeline.
 // ESTO ES UN MIDDLEWARE, EL HTTP REQUEST PASA POR UN PIPELINE. 
@@ -67,7 +26,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 // app.useCors("CorsPolicy");
 
 app.UseAuthorization();
