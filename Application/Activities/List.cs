@@ -1,7 +1,6 @@
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Persistence;
 
 namespace Application.Activities
@@ -43,6 +42,7 @@ namespace Application.Activities
                 
                 // habria que tambien desde nuestro controller enviarnos en el query el cancellationToken, ya que la api es la que recibe el request y luego recien nos manda la query aqui. 
                 return await _context.Activities.ToListAsync();
+            
             }
         }
     }

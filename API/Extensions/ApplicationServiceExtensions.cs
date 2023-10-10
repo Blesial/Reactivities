@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application.Activities;
 using Application.Core;
 using Microsoft.EntityFrameworkCore;
@@ -67,12 +63,6 @@ namespace API.Extensions
             // schema based on changes made to the data model in the application. It allows developers to keep 
             // the database schema in sync with the changes in the domain model (entities and relationships) 
             // without the need to manually create or modify the database tables.
-
-            // services.AddCors(opt => {
-            //     opt.addPolicy("CorsPolicy", policy => {
-            //         policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
-            //     });
-            // });
 
             return services;
         }

@@ -17,6 +17,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddApplicationServices(builder.Configuration);
 
+builder.Services.AddCors(opt => {
+    opt.AddPolicy("CorsPolicy", policy =>  
+    {
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+    });
+});
+
 var app = builder.Build(); 
 
 // Configure the HTTP request pipeline.
@@ -26,7 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-// app.useCors("CorsPolicy");
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
@@ -49,8 +56,6 @@ try
 
     await context.Database.MigrateAsync(); // es similar al update command de la base de datos. actualiza la bd segun 
     // la migracion, o si la bd no existe, la crea
-    //Las migraciones son actualizaciones en el esquema de la base de
-    // datos basadas en los cambios en el modelo de datos (por ejemplo, agregar tablas o columnas).
 
     await Seed.SeedData(context);
 }
