@@ -1,83 +1,42 @@
-import { useEffect, useState } from 'react';
-import './styles.css';
-import axios from 'axios';
-import { Activity } from '../models/activity';
-import { Container } from 'semantic-ui-react';
-import NavBar from './NavBar';
-import ActivityDashBoard from '../../features/activities/dashboard/ActivityDashBoard';
+import { useEffect } from "react";
+import "./styles.css";
+import { Container } from "semantic-ui-react";
+import NavBar from "./NavBar";
+import ActivityDashBoard from "../../features/activities/dashboard/ActivityDashBoard";
 // algunos paquetes que instalemos no vienen escritos para ser leidos por typescript y solo por javascript
-// pero se soluciona: buscar typescript definition file outthere for uuid. 
-import {v4 as uuid} from 'uuid';
+// pero se soluciona: buscar typescript definition file outthere for uuid.
+import LoadingComponent from "./LoadingComponent";
+import { useStore } from "../stores/store";
+import { observer } from "mobx-react-lite";
+
+//MOBX: Deriving State: Deriving state means calculating or computing values from the existing
+// application state. For instance, in a shopping cart application,
+// the total cost of items in the cart can be derived from the individual prices and quantities of items.
+
+// Automatically: MobX uses a concept known as reactive programming.
+//  It tracks dependencies between state and the values derived from that state.
+//  When any part of the state changes, MobX automatically updates all the derived values that depend on it.
 
 function App() {
-const [activities, setActivities] = useState<Activity[]>([]);
-const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
-const [editMode, setEditMode] = useState(false); // want to display it when we're either editing or we're creating an activity
+  const { activityStore } = useStore();
 
-useEffect(() => {
-  axios.get<Activity[]>('http://localhost:5000/api/Activities')
-    .then(response => {
-      console.log(response);
-      setActivities(response.data);
-    })
-}, []); // dependencies empty . cause to happend just once. 
+  useEffect(() => {
+    activityStore.loadActivities();
+  }, [activityStore]); // dependencies empty . cause to happend just once.
 
-function handleSelectedActivity(id: string) {
-  setSelectedActivity(activities.find(x => x.id === id)); //Metodo que regresa el primer objeto del array que cumple con la condicion. 
-}
-
-function handleCancelSelectedActivity ()   {
-  setSelectedActivity(undefined);
-}
-
-function handleFormOpen (id?: string)   { // optional id parameter
-    id ? handleSelectedActivity(id) : handleCancelSelectedActivity();
-    setEditMode(true);
-}
-
-function handleFormClose ()   {
-  setEditMode(false);
-}
-
-// Para funcionalidad del Submit del Form 
-function handleCreateOrEditActivity (activity: Activity) {
-  // si el activity id existe quiere decir que estamos editando una actividad existente
-  activity.id ? setActivities([...activities.filter(x => x.id !== activity.id), activity]) 
-              : setActivities([...activities, {...activity, id: uuid()}]);
-
-  setEditMode(false); // para que se cierre el editor
-  setSelectedActivity(activity); // para que se actualice los detalles de la actividad editadas recientemente
-
-}
-
-function handleDelete (id: string) {
-  setActivities([...activities.filter(x => x.id !== id)])
-}
-
-// So what's going to happen if they're editing an activity and they click on cancel, then they're simply
-//going to go back to the activity details, open components.
-//And if they're just creating an activity, then all that's going to achieve is it's going to close the
-//form.
-
-
+  // So what's going to happen if they're editing an activity and they click on cancel, then they're simply
+  //going to go back to the activity details, open components.
+  //And if they're just creating an activity, then all that's going to achieve is it's going to close the
+  //form.
+  if (activityStore.loadingInitial)
+    return <LoadingComponent content="Loading App" />;
   return (
     <>
-      <NavBar openForm={handleFormOpen} />
-      <Container style={{marginTop:'7em'}}>
-       <ActivityDashBoard 
-       activities={activities}
-       selectedActivity={selectedActivity}
-       selectActivity={handleSelectedActivity}
-       cancelSelectedActivity={handleCancelSelectedActivity}
-       editMode ={editMode}
-       openForm ={handleFormOpen}
-       closeForm ={handleFormClose}
-       createOrEdit={handleCreateOrEditActivity}
-       deleteActivity={handleDelete}
-       />
-        </Container>
-        </>
+      <NavBar />
+      <Container style={{ marginTop: "7em" }}>
+        <ActivityDashBoard />
+      </Container>
+    </>
   );
 }
-
-export default App;
+export default observer(App);

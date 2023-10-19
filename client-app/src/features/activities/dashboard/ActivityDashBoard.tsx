@@ -1,20 +1,9 @@
 import { Grid } from "semantic-ui-react";
-import { Activity } from "../../../app/models/activity";
 import ActivityList from "./ActivityList";
 import ActivityDetails from "../details/ActivitiesDetails";
 import ActivityForm from "../form/ActivityForm";
-
-interface Props {
-  activities: Activity[];
-  selectedActivity: Activity | undefined;
-  selectActivity: (id: string) => void;
-  cancelSelectedActivity: () => void;
-  editMode: boolean;
-  openForm: (id: string) => void; // we don't need to make this optional because when we're using this inside our dashboard, we're actually passing this down to our activity details component.And we'll always have an ID, So this one is not going to be optional.
-  closeForm: () => void;
-  createOrEdit: (activity: Activity) => void;
-  deleteActivity: (id: string) => void;
-}
+import { useStore } from "../../../app/stores/store";
+import { observer } from "mobx-react-lite";
 
 // semantic ui grid system para hacer el layout el contenido en nuestras paginas.
 // css frameworks todos vienen con grid sistems como bootstrap
@@ -30,34 +19,18 @@ interface Props {
 
 // Bootstrap ofrece clases adicionales para modificar la apariencia y el comportamiento de las columnas
 // , como ajustar los márgenes (mx-auto), ocultar columnas en ciertos tamaños de pantalla (d-none, d-md-block), y más.
-export default function ActivityDashBoard({
-  activities,
-  selectActivity,
-  selectedActivity,
-  cancelSelectedActivity,
-  editMode,
-  openForm,
-  closeForm,
-  createOrEdit,
-  deleteActivity
-}: Props) {
+export default observer(function ActivityDashBoard() {
+  const { activityStore } = useStore();
+  const { selectedActivity, editMode } = activityStore;
   return (
     <Grid>
       <Grid.Column width="10">
-        <ActivityList activities={activities} selectActivity={selectActivity} deleteActivity={deleteActivity} />
+        <ActivityList />
       </Grid.Column>
       <Grid.Column width="6">
-        {selectedActivity && !editMode && (
-          <ActivityDetails
-            activity={selectedActivity}
-            cancelSelectActivity={() => cancelSelectedActivity()}
-            openForm={openForm}
-
-          />
-        )}
-        {editMode &&
-        <ActivityForm closeForm={closeForm} activity={selectedActivity} createOrEdit={createOrEdit}/>}
+        {selectedActivity && !editMode && <ActivityDetails />}
+        {editMode && <ActivityForm />} 
       </Grid.Column>
     </Grid>
   );
-}
+});
