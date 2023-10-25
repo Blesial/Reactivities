@@ -1,5 +1,7 @@
 using Application.Activities;
 using Application.Core;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -40,6 +42,8 @@ namespace API.Extensions
             //utilizar una instancia del contexto de la base de datos mediante la    
             // INYECCION DE DEPENDENCIAS!!! ver video q paso diego
             // hay que hacer dotnet restore para que aparezca el metodo AddDbContext. 
+            services.AddFluentValidationAutoValidation();
+            services.AddValidatorsFromAssemblyContaining<Creates>();
 
             services.AddDbContext<DataContext>(opt => // expresion LAMBDA (PROGRAMACION FUNCIONAL)
             {

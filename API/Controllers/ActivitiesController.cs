@@ -18,21 +18,20 @@ namespace API.Controllers
         //the response body its gonna be a lista of activity:
 
 
-        public async Task<ActionResult<List<Activity>>> GetActivities()
+        // with i action result no necesitamos especificar ningun type del resultado de ese metodo 
+
+        public async Task<IActionResult> GetActivities()
         {
             // Send es un metodo de mediator. No confundirse con List que es la clase dentro de activities
-            return await Mediator.Send(new List.Query());
+            return HandleResult(await Mediator.Send(new List.Query()));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Activity>> GetActivity(Guid id)
-        {
-            return await Mediator.Send(new Details.Query
-            {
 
-                Id = id
-            }
-        );
+        // El IActionResult nos permite devolver http responses envez de solo el tipo del response. 
+        public async Task<IActionResult> GetActivity(Guid id)
+        {
+          return HandleResult(await Mediator.Send(new Details.Query{Id= id}));
         }
 
         [HttpPost]
@@ -40,29 +39,27 @@ namespace API.Controllers
         // YA QUE EN ESTE CASO NO DEVUELVE NADA UN POST. 
         public async Task<IActionResult> CreateActivity([FromBody]Activity activity)
         {
-            await Mediator.Send(new Creates.Command {Activity = activity});
-
-            return Ok();
+            return HandleResult(await Mediator.Send(new Creates.Command {Activity = activity}));        
         }
 
+        // FLUENT VALIDATION: VAMOS A VALIDAR LAS PETICIONES QUE RECIBIMOS INDIRECTAMENTE EN LA API
+        // INDIRECTAMENTE PORQUE EN REALIZAR VAMOS A VALIDAR DENTRO DE NUESTRA LOGICA (APPLICATION LAYER)
+        // POR LO QUE RECIBIREMOS LA SOLICITUD, Y ENVIAREMOS CON MEDIATOR A NUESTRA LOGICA LO RECIBIDO PARA ALLI VALIDARLA
+        // INSTALAR EN NUGGET -> FLUENT VALIDATION ASP.NET CORE PARA NUESTRA APP LAYER 
         [HttpPut("{id}")]
 
         public async Task<IActionResult> EditActivity(Guid id, [FromBody]Activity activity)
         {
             activity.Id = id;
 
-            await Mediator.Send(new Edit.Command {Activity = activity});
-
-            return Ok();
+            return HandleResult(await Mediator.Send(new Edit.Command {Activity = activity}));
         }
 
         [HttpDelete("{id}")]
 
         public async Task<IActionResult> DeleteActivity(Guid id)
         {
-            await Mediator.Send(new Delete.Command {Id = id});
-            
-            return Ok();
+            return HandleResult(await Mediator.Send(new Delete.Command {Id = id}));
         }
 
 

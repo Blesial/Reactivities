@@ -21,6 +21,20 @@ export default class ActivityStore {
     );
   }
 
+  // Verifica si ya existe una entrada en el objeto activities para la fecha date.
+//Si existe, agrega la actividad actual activity al array existente de actividades para esa fecha, utilizando el operador ternario para crear un nuevo array que contiene todas las actividades previas y la nueva actividad.
+// Si no existe una entrada para esa fecha, crea una nueva entrada en el objeto activities con la fecha como clave y un array que contiene solo la actividad actual.
+// Este proceso se repite para cada actividad en activitiesByDate, lo que agrupa las actividades por fecha.
+  get groupedActivities() {
+    return Object.entries( //  Comienza con la creación de un array de pares clave-valor a partir de un objeto.
+      this.activitiesByDate.reduce((activities, activity) => {// se utiliza para reducir un array a un solo valor acumulando información durante cada iteración. En este caso, se inicia con un objeto vacío llamado activities.
+        const date = activity.date; // this is a string -> key of each object
+        activities[date] = activities[date] ? [...activities[date], activity] : [activity]
+        return activities;
+      }, {} as {[key: string]: Activity[]})
+    )
+  }
+
   // action: usamos arrow function para bindear el this a la clase. sino tendriamos que especificar el bind dentro del constructor action.bound
   loadActivities = async () => {
     this.setLoadingInitial(true);

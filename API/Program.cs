@@ -1,4 +1,5 @@
 using API.Extensions;
+using API.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -27,6 +28,8 @@ builder.Services.AddCors(opt => {
 var app = builder.Build(); 
 
 // Configure the HTTP request pipeline.
+
+app.UseMiddleware<ExceptionMiddleWare>();
 // ESTO ES UN MIDDLEWARE, EL HTTP REQUEST PASA POR UN PIPELINE. 
 if (app.Environment.IsDevelopment())
 {

@@ -1,3 +1,4 @@
+using Application.Core;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +10,10 @@ namespace Application.Activities
     {
 
         // solicitud:
-        public class Query : IRequest<List<Activity>> { }
+        public class Query : IRequest<Result<List<Activity>>> { }
 
         // handler de esa solicitud:
-        public class Handler : IRequestHandler<Query, List<Activity>>
+        public class Handler : IRequestHandler<Query, Result<List<Activity>>>
         {
             private readonly DataContext _context;
 
@@ -23,7 +24,7 @@ namespace Application.Activities
             }
 
             // Response: 
-            public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<Activity>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 // try
                 // {
@@ -41,8 +42,7 @@ namespace Application.Activities
                 // }
                 
                 // habria que tambien desde nuestro controller enviarnos en el query el cancellationToken, ya que la api es la que recibe el request y luego recien nos manda la query aqui. 
-                return await _context.Activities.ToListAsync();
-            
+                 return Result<List<Activity>>.Success(await _context.Activities.ToListAsync(cancellationToken));          
             }
         }
     }

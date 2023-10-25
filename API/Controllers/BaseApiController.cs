@@ -1,3 +1,4 @@
+using Application.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,18 @@ namespace API.Controllers
         // Esto significa que la primera vez que se accede a Mediator, se crea una instancia de IMediator y se almacena en _mediator: 
         protected IMediator Mediator => _mediator ??=
          HttpContext.RequestServices.GetService<IMediator>();
+
+        protected ActionResult HandleResult<T>(Result<T> result)
+        {   
+
+            if(result == null) return NotFound();
+
+            if (result.IsSuccess && result.Value != null) return Ok(result.Value);  
+
+            if (result.IsSuccess && result.Value == null) return NotFound();
+
+                return BadRequest(result.Error);
+        }
     }
 
     // Prop Mediator:  es una propiedad CALCULADA (propiedad de solo lectura) llamada Mediator.

@@ -1,3 +1,4 @@
+using Application.Core;
 using Domain;
 using MediatR;
 using Persistence;
@@ -6,13 +7,12 @@ namespace Application.Activities
 {
     public class Details
     {
-        public class Query : IRequest<Activity>
+        public class Query : IRequest<Result<Activity>>
         {
-
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Activity>
+        public class Handler : IRequestHandler<Query, Result<Activity>>
         {
 
             private readonly DataContext _context;
@@ -21,9 +21,14 @@ namespace Application.Activities
                 _context = context;
 
             }
-            public async Task<Activity> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<Activity>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _context.Activities.FindAsync(request.Id);
+                var activity = await _context.Activities.FindAsync(request.Id);
+
+                // no vamos aespecificar failure porque no lo necesitamos, nuestro activity va a ser el activity o va a ser null
+                // dsp dentro del controller vamos a testear que tipo response obtenemos. 
+
+                return Result<Activity>.Success(activity);
             }
         }
     }

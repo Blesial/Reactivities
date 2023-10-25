@@ -4,6 +4,7 @@ import { useStore } from "../../../app/stores/store";
 import { observer } from "mobx-react-lite";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useEffect } from "react";
+import ActivityFilters from "./ActivityFilters";
 
 // semantic ui grid system para hacer el layout el contenido en nuestras paginas.
 // css frameworks todos vienen con grid sistems como bootstrap
@@ -39,7 +40,7 @@ export default observer(function ActivityDashBoard() {
         <ActivityList />
       </Grid.Column>
       <Grid.Column width="6">
-      <h2>Activities Filters</h2>
+      <ActivityFilters/>
       </Grid.Column>
     </Grid>
   );
