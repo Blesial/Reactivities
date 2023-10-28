@@ -1,5 +1,9 @@
 using API.Extensions;
 using API.Middleware;
+using Domain;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -15,7 +19,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // SERVICES SON PARA AGREGAR LOGICA A NUESTRO CODIGO. OSEA, MAS FUNCIONALIDADES. ESTO SE HACE
 // A TRAVES DE INYECCION DE DEPENDENCIAS!!!!
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt => {
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    opt.Filters.Add(new AuthorizeFilter(policy));
+});
 builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.AddCors(opt => {
@@ -25,11 +32,13 @@ builder.Services.AddCors(opt => {
     });
 });
 
+builder.Services.AddIdentityService(builder.Configuration);
+
 var app = builder.Build(); 
 
 // Configure the HTTP request pipeline.
 
-app.UseMiddleware<ExceptionMiddleWare>();
+app.UseMiddleware<ExceptionMiddleWare>();   
 // ESTO ES UN MIDDLEWARE, EL HTTP REQUEST PASA POR UN PIPELINE. 
 if (app.Environment.IsDevelopment())
 {
@@ -38,6 +47,9 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors("CorsPolicy");
 
+// asegurar que authentication este antes. primero hay que ver si el usuario es valido
+// y dsp ver si tiene autorizacion para ingresar a alguna parte de la web o lo q sea. 
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Registra los endpoints de nuestros controllers para saber donde mandar los requests que llegan
@@ -56,11 +68,12 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<DataContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
 
     await context.Database.MigrateAsync(); // es similar al update command de la base de datos. actualiza la bd segun 
     // la migracion, o si la bd no existe, la crea
 
-    await Seed.SeedData(context);
+    await Seed.SeedData(context, userManager);
 }
 catch (Exception ex)
 {

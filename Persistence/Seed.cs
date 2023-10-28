@@ -1,4 +1,5 @@
 using Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace Persistence
 {
@@ -9,8 +10,25 @@ namespace Persistence
 
         // static methods can be used without creating an instance of the class. 
         //  The method returns a Task because it's an asynchronous method.
-        public static async Task SeedData(DataContext context)
+
+        public static async Task SeedData(DataContext context, UserManager<AppUser> userManager)
+        // el userManager viene de Identity y nos permite manejar el user en la base de datos. 
         {
+            if (!userManager.Users.Any()) 
+            {
+                var users = new List<AppUser>
+                {
+                    new() {DisplayName = "Bob", UserName = "bob", Email = "bob@test.com"},
+                    new() {DisplayName = "Tom", UserName = "tom", Email = "tom@test.com"},
+                    new() {DisplayName = "Jane", UserName = "jane", Email = "jane@test.com"},
+                };
+
+                foreach (var user in users)
+                {
+                    // this createAsync va a crear el usuario y ya guardarlo en la db, no es necesario hacer el savechangesAsync
+                    await userManager.CreateAsync(user, "Pa$$w0rd");
+                }
+            }
             // if (context.Activities.Any()) return;: This line checks if there are any records already in the Activities table of the database.
             if (context.Activities.Any()) return;
             
