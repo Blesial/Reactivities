@@ -3,6 +3,7 @@ import { Activity } from "../models/activity";
 import { toast } from "react-toastify";
 import { router } from "../router/routes";
 import { store } from "../stores/store";
+import { User, UserFormValues } from "../models/user";
 
 // vamos a crear un delay en la carga de la pagina para hacerlo mas realista:
 
@@ -30,7 +31,7 @@ axios.interceptors.response.use(
     switch(status) {
         case 400:
           // para mandar a la persona que hizo un rquest de una activity q devuelve un 400, es porque envio mal el id. 
-              if (config.method == 'get' && data.errors.hasOwnProperty('id')) {
+              if (config.method === 'get' && data.errors.hasOwnProperty('id')) {
                 router.navigate('/not-found')
               }
             if (data.errors) {
@@ -90,8 +91,16 @@ const Activities = {
   // vemos como el metodo list devuelve un Promise del tipo Activity[]. lo logramos con <T> : Tipos genericos.
 };
 
+// metodos para el usuario, logearlo, registrarlo, etc.
+const Account = {
+  current: () => requests.get<User>("/account"),
+  login: (user: UserFormValues) => requests.post<User>('/account/login', user),
+  register: (user: UserFormValues) => requests.post<User>('account/register', user) 
+};
+
 const agent = {
   Activities,
+  Account
 };
 
 export default agent;

@@ -21,7 +21,7 @@ namespace API.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
-    {   
+    {
         // UserManager from the Identity Framework into your AccountController is essential
         // for implementing user authentication and authorization in your application. 
         // The UserManager is a critical component of the ASP.NET Identity Framework,
@@ -37,21 +37,21 @@ namespace API.Controllers
         // Creamos un endpoint para el login del usuario. 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login([FromBody]LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
         {
-           var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-           if (user == null) return Unauthorized(); 
+            if (user == null) return Unauthorized();
 
             // el metodo checkpassword compara la password del user con la password enviada y devuelve booleano
-           var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+            var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
 
-           if (result)
-           {
-           return CreateUserObject(user);
-           }
+            if (result)
+            {
+                return CreateUserObject(user);
+            }
 
-           return Unauthorized(); 
+            return Unauthorized();
 
         }
         [AllowAnonymous]
@@ -94,13 +94,13 @@ namespace API.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<UserDto>> GetCurrentUser ()
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             // User Object -> claims principle for a user associated with the executing action
             // como estamos autenticando contra nuestros controllers con un token, nuestro CLAIM PRINCIPLE
             // esta basado en ESE TOKEN.
             var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
-            
+
             if (user != null)
             {
                 return CreateUserObject(user);
@@ -111,7 +111,7 @@ namespace API.Controllers
         }
 
 
-          private UserDto CreateUserObject(AppUser user)
+        private UserDto CreateUserObject(AppUser user)
         {
             return new UserDto
             {

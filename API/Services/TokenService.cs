@@ -16,7 +16,7 @@ namespace API.Services
         public TokenService(IConfiguration configuration)
         {
             _configuration = configuration;
-            
+
         }
         // los claims son declaraciones que hace el usuario de si mismo. 
         // esta informacion van dentro del token. 
@@ -32,10 +32,10 @@ namespace API.Services
                 new(ClaimTypes.NameIdentifier, appUser.Id),
                 new(ClaimTypes.Email, appUser.Email),
             };
-                            // el metodo para la symetric security key viene del nuget package System.identitiyModel
-                            // SymetricKey es -> cuando encriptamos la key, la misma key que usamos para encriptar la usaremos para desencriptar 
-                            // Esta key permanecera en el server, no se debe compartir bajo ninguna condicion. 
-                    
+            // el metodo para la symetric security key viene del nuget package System.identitiyModel
+            // SymetricKey es -> cuando encriptamos la key, la misma key que usamos para encriptar la usaremos para desencriptar 
+            // Esta key permanecera en el server, no se debe compartir bajo ninguna condicion. 
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["TokenKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

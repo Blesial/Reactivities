@@ -11,21 +11,23 @@ namespace API.Extensions
     {
         public static IServiceCollection AddIdentityService(this IServiceCollection services,
          IConfiguration config)
-         {
+        {
             services
-            .AddIdentityCore<AppUser>(opt => {
+            .AddIdentityCore<AppUser>(opt =>
+            {
                 // the password has complex requirements in default
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.User.RequireUniqueEmail = true;
-                
+
             })
             // nos permite hacer un querie de nuestros users en ef store o DataBase!
             .AddEntityFrameworkStores<DataContext>();
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
-            
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(opt => {
+                .AddJwtBearer(opt =>
+                {
                     opt.TokenValidationParameters = new TokenValidationParameters
                     {
                         // validamos si el token fue firmado por el api server y le damos el key.
@@ -41,6 +43,6 @@ namespace API.Extensions
             services.AddScoped<TokenService>();
 
             return services;
-         }
+        }
     }
 }

@@ -6,6 +6,7 @@ import ActivitiesDetails from "../../features/activities/details/ActivitiesDetai
 import TestErrors from "../../features/errors/TestError";
 import NotFound from "../../features/errors/NotFound";
 import ServerError from "../../features/errors/ServerError";
+import LoginForm from "../../features/users/LoginForm";
 
 export const routes: RouteObject[] = [
     { // root route : app 
@@ -20,6 +21,7 @@ export const routes: RouteObject[] = [
             // pero nosotros podemos modificar o controlarlo reseteando el estado manualmente para que no se preserve el estado por default
             // para ello utilizamos un Component KEY !
             {path: 'manage/:id', element: <ActivityForm key='manage'/>},
+            {path: 'login', element: <LoginForm/>},
             {path: 'errors', element: <TestErrors/>},
             {path: 'not-found', element: <NotFound/>},
             {path: '/server-error', element: <ServerError/>},
