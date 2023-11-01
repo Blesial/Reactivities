@@ -47,6 +47,8 @@ namespace Domain
         public string City {get; set;} 
 
         public string Venue {get; set;}
+        // al inicializar la coleccion hacemos que los attendes sean un array vacio envez de null
+        public ICollection<ActivityAttende> Attendes {get;set;} = new List<ActivityAttende>();
     
     }
 }

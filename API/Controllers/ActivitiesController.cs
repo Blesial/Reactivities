@@ -2,11 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Domain;
 using Application.Activities;
 using Application;
-using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
-    [AllowAnonymous]
     // deriven from controller base!!! 
     // already has the API attributtes
     public class ActivitiesController : BaseApiController

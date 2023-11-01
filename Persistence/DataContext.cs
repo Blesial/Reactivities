@@ -34,6 +34,41 @@ namespace Persistence
 
 // esto representa la tabla q crea, y el nombre 
         public DbSet<Activity> Activities {get; set;}
+
+
+        // si bien llamando a activity podriamos popular y obtener los users.
+        // agregamos este db set para poder llamar directamente esta tabla cuando queramos:
+        public DbSet<ActivityAttende> ActivityAttendes {get;set;}
+
+
+        // para poder sobreescribir la configuracion de algun dbset :
+        protected override void OnModelCreating(ModelBuilder builder)
+        // -> Este método es anulado de la clase base DbContext para proporcionar 
+        // configuraciones personalizadas al modelo
+        {
+            base.OnModelCreating(builder); //  Llama al método base para asegurarse de que cualquier configuración de modelo predeterminada proporcionada por Entity Framework Core se ejecute antes de agregar configuraciones personalizadas
+
+            // Tenemos 2 propertys en nuestra entitie que tienen id, pero queremos 
+            // crear una primary key que es una combinacion de app user id y activity id. 
+            builder.Entity<ActivityAttende>(x => x.HasKey(aa => new{aa.AppUserId, aa.ActivityId})); // clave principal compuesta
+
+            builder.Entity<ActivityAttende>()
+            .HasOne(u => u.AppUser)
+            .WithMany(a => a.Activities) // navegacion inversa
+            .HasForeignKey(aa => aa.AppUserId);
+
+            // Facilita la navegación entre entidades relacionadas: 
+            // Cuando recuperas una instancia de ActivityAttende,
+            // tener las propiedades de navegación inversa permite acceder directamente a 
+            //la entidad AppUser y Activity relacionada sin tener que escribir manualmente
+            //la lógica para recuperar estas entidades por separado.
+
+             builder.Entity<ActivityAttende>()
+            .HasOne(u => u.Activity)
+            .WithMany(a => a.Attendes) // navegacion inversa
+            .HasForeignKey(aa => aa.ActivityId);
+
+        }
     }
 }
 

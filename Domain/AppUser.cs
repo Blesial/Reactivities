@@ -8,6 +8,9 @@ namespace Domain
 
         public string Bio {get;set;}
 
+        public ICollection<ActivityAttende> Activities {get;set;}
+
+
         // cuando creamos un usuario asi tendremos acceso a varias propiedades que vienen de la clase padre identityUser
     }
 }
