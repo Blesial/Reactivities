@@ -21,6 +21,13 @@ namespace Application.Core
             // 
             .ForMember(d => d.HostUserName, o => o.MapFrom(s => s.Attendes
             .FirstOrDefault(x => x.IsHost).AppUser.UserName));
+
+            // necesitamos agregar otro mapping debido al mapping error porque dentro del activityDto tenemos un Attende property y no es llamado profile.
+            // 
+            CreateMap<ActivityAttende, Profiles.Profile>()
+            .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.AppUser.DisplayName)) 
+            .ForMember(d => d.UserName, o => o.MapFrom(s => s.AppUser.UserName)) 
+            .ForMember(d => d.Bio, o => o.MapFrom(s => s.AppUser.Bio)); 
         }
 
         // o => o.MapFrom(s => s.Attendes.FirstOrDefault(x => x.IsHost).AppUser.UserName): Specifies how to derive the value for HostUserName in the ActivityDto.

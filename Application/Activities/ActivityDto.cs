@@ -20,6 +20,8 @@ namespace Application.Activities
 
         public string HostUserName {get;set;} // nos identificara al host
 
-        public ICollection<Profile> Profiles {get;set;}
+        public bool IsCancelled {get;set;}
+
+        public ICollection<Profile> Attendes {get;set;}
     }
 }
